@@ -24,7 +24,7 @@ jobs:
       - name: Terraform format align and check
         run: |
             terraform fmt -recursive
-            terraform fmt -Check -recursive
+            terraform fmt -check -recursive
 
       - name: Terraform init
         run: terraform init
