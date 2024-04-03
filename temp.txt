@@ -24,16 +24,16 @@ jobs:
   resolve-env:
     runs-on: ubuntu-latest
     steps:
-      - name: resolve environment
-        run: |
+    - name: resolve environment
+      run: |
           branch_ref=${{ github.base_ref }}
           if [[ "$branch_ref" == "main" ]] || ${{ contains(github.event.inputs.environment, 'prod') }}; then
             echo "env_name=prod" >> $GITHUB_ENV
           else
             echo "env_name=dev" >> $GITHUB_ENV
           fi
-      outputs:
-        env_name: '${{ env.env_name }}'
+    outputs:
+      env_name: '${{ env.env_name }}'
 
   build:
     name: Deploy and Release
@@ -96,46 +96,47 @@ jobs:
 
       - name: Setup semver bash
         run: |
-          sudo curl https://raw.githubusercontent.com/fsaintjacques/semver-tool/3.0.0/src/semver -o /usr/local/bin/semver && sudo chmod +x /usr/local/bin/semver
-          semver --version
+            sudo curl https://raw.githubusercontent.com/fsaintjacques/semver-tool/3.0.0/src/semver -o /usr/local/bin/semver && sudo chmod +x /usr/local/bin/semver
+            semver --version
         
       - name: Get version
         id: get-version
         run: |
-          git fetch --tags
-          last_version=$(git tag --sort=-version:refname | grep -P "^$package_name@v\d+.\d+.\d+$" | head -n 1 | cut -d v -f 2)
-          if [ -z "$last_version" ]; then
-            new_version=1.0.0
-          elif [[ "$GITHUB_REF" =~ ^major ]]; then
-            new_version=$(semver bump major "$last_version")
-          elif [[ "$GITHUB_REF" =~ ^feat ]]; then
-            new_version=$(semver bump minor "$last_version")
-          else
-            new_version=$(semver bump patch "$last_version")
-          fi
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+            git fetch --tags
+            last_version=$(git tag --sort=-version:refname | grep -P "^$package_name@v\d+.\d+.\d+$" | head -n 1 | cut -d v -f 2)
+            if [ -z "$last_version" ]; then
+              new_version=1.0.0
+            elif [[ "$GITHUB_REF" =~ ^major ]]; then
+              new_version=$(semver bump major "$last_version")
+            elif [[ "$GITHUB_REF" =~ ^feat ]]; then
+              new_version=$(semver bump minor "$last_version")
+            else
+              new_version=$(semver bump patch "$last_version")
+            fi
+              echo "new_version=$new_version" >> $GITHUB_OUTPUT
         
       - name: Prepare artifact
         id: prep
         run: |
-          BUILD_NUM=$(echo $GITHUB_RUN_NUMBER)
-          BUILD_ID=$(echo $GITHUB_SHA | head -c7)
+            BUILD_NUM=$(echo $GITHUB_RUN_NUMBER)
+            BUILD_ID=$(echo $GITHUB_SHA | head -c7)
       
-          if [[ "${{ github.event.pull_request.merged }}" == 'true' ]]; then
-            VERSION=${SCOPE}@v${RELEASE_VERSION}
-          else
-            VERSION=${SCOPE}@v${RELEASE_VERSION}+build.${BUILD_NUM}.${BUILD_ID}
-          fi      
-          
-          ARTIFACT_NAME=${VERSION}.zip
-          zip dist -r *.tf
-          mv dist.zip ${ARTIFACT_NAME}
-          ls -al
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+            if [[ ${{ github.event.pull_request.merged }} == 'true' ]]; then
+                VERSION=${SCOPE}@v${RELEASE_VERSION}
+            else
+                VERSION=${SCOPE}@v${RELEASE_VERSION}+build.${BUILD_NUM}.${BUILD_ID}
+            fi      
+            
+            ARTIFACT_NAME=${VERSION}.zip
+            zip dist -r *.tf
+            mv dist.zip ${ARTIFACT_NAME}
+            ls -al
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+            echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
         env:
           SCOPE: ${{ env.package_name }}
           RELEASE_VERSION: ${{ steps.get-version.outputs.new_version }}
+      
 
   frontend-build-push:
     runs-on: ubuntu-latest
@@ -154,22 +155,24 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd frontend
-          yarn install
-          yarn build
-          cp -r dist ../
-          cd ..
+            cd frontend
+            yarn install
+            yarn build
+            cp -r dist ../
+            cd ..
 
       - name: Copy dist folder to S3 using cp
         run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+            sudo apt-get update
+            sudo apt-get install -y awscli
 
       - name: Deploy to S3 Bucket
         run: |
-          ls  -al
-          aws s3 sync dist/ s3://prod.subash-frontend --delete
+            ls  -al
+            aws s3 sync dist/ s3://prod.subash-frontend --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+        
+          
