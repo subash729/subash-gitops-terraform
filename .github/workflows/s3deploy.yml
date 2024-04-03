@@ -84,7 +84,7 @@ jobs:
             yarn install
             yarn build
             cd ..
-            mv -r frontend/dist/* .
+            mv frontend/dist/* .
 
     #   - name: Copy dist folder to local directory
     #     run: mkdir dist_local && cp -r dist/* dist_local/
