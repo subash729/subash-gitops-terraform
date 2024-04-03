@@ -98,7 +98,7 @@ jobs:
         # with:
         #   args: --exclude "*"
         run: |
-            aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+            aws s3 sync dist/ s3://subashchy729.com --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
