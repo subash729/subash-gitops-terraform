@@ -88,19 +88,20 @@ jobs:
 
     #   - name: Copy dist folder to local directory
     #     run: mkdir dist_local && cp -r dist/* dist_local/
+      - name: Copy dist folder to S3 using cp
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
 
       - name: Deploy to S3 Bucket
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --exclude "*" --include "/dist/**"
+        # uses: jakejarvis/s3-sync-action@master
+        # with:
+        #   args: --exclude "*"
+        run: |
+            aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
- 
-    #   - name: Copy dist folder to S3 using cp
-    #     run: |
-    #         sudo apt-get update
-    #         sudo apt-get install -y awscli
-    #         aws s3 sync dist/ s3://subashchy729.com --delete
+        
+          
