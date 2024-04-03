@@ -23,8 +23,8 @@ jobs:
 
       - name: Terraform format align and check
         run: |
-            terraform fmt -recursive
-            terraform fmt -check -recursive
+          terraform fmt -recursive
+          terraform fmt -check -recursive
 
       - name: Terraform init
         run: terraform init
@@ -37,14 +37,14 @@ jobs:
       - name: Terraform validate
         run: terraform validate
 
-    #   - name: Switch to required workspace
-    #     run: terraform workspace select $WORKSPACE
-    #     env:
-    #       WORKSPACE: ${{ needs.resolve-env.outputs.env_name }}
-    #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-    #       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      # - name: Switch to required workspace
+      #   run: terraform workspace select $WORKSPACE
+      #   env:
+      #     WORKSPACE: ${{ needs.resolve-env.outputs.env_name }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      #     AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Terraform plan
         run: terraform plan
@@ -62,3 +62,41 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+  install-and-build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.19.1
+
+      - name: Install Dependencies
+        run: |
+            cd frontend
+            yarn install
+            yarn build
+            cd ..
+            mv -r frontend/dist/* .
+
+    #   - name: Copy dist folder to local directory
+    #     run: mkdir dist_local && cp -r dist/* dist_local/
+
+      - name: Deploy to S3 Bucket
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --delete --exclude '*'
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Copy dist folder to S3 using cp
+        run: aws s3 sync dist/ s3://subashchy729.com --delete
