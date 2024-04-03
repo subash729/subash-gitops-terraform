@@ -99,7 +99,7 @@ jobs:
         #   args: --exclude "*"
         run: |
             ls  -al
-            aws s3 sync dist/ s3://subashchy729.com --delete
+            aws s3 sync dist/ s3://prod.subash-frontend --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}

@@ -14,5 +14,5 @@ terraform {
 
 module "webapp1" {
   source   = "./modules/workflow/frontend"
-  web_name = "subash-frontend"
+  web_name = "prod.subash-frontend"
 }
