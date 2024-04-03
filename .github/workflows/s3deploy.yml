@@ -83,8 +83,8 @@ jobs:
             cd frontend
             yarn install
             yarn build
+            cp -r frontend/dist ../
             cd ..
-            mv frontend/dist/* .
 
     #   - name: Copy dist folder to local directory
     #     run: mkdir dist_local && cp -r dist/* dist_local/
@@ -98,6 +98,7 @@ jobs:
         # with:
         #   args: --exclude "*"
         run: |
+            ls  -al
             aws s3 sync dist/ s3://subashchy729.com --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
