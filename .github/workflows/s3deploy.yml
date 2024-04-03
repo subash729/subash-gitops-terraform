@@ -86,7 +86,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Terraform apply
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event.pull_request.merged
         run: |
             if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               terraform apply -var="web_name=prod.subash-frontend" --auto-approve
