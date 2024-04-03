@@ -83,7 +83,7 @@ jobs:
             cd frontend
             yarn install
             yarn build
-            cp -r frontend/dist ../
+            cp -r dist ../
             cd ..
 
     #   - name: Copy dist folder to local directory
