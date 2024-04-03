@@ -13,7 +13,7 @@ terraform {
 }
 
 terraform {
-  backend "s3" {
+  backend "s31" {
     bucket         = "dev.subash-frontend"
     key            = "terraform.tfstate"
     region         = "us-east-1"
