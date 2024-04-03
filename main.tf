@@ -12,7 +12,11 @@ terraform {
   }
 }
 
+locals {
+  bucket_name = var.web_name == "prod.subash-frontend" ? "prod-subash-frontend-bucket" : "dev-subash-frontend-bucket"
+}
+
 module "webapp1" {
   source   = "./modules/workflow/frontend"
-  web_name = "prod.subash-frontend"
+  web_name = var.web_name
 }
