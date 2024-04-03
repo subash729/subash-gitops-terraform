@@ -126,12 +126,13 @@ jobs:
             else
                 VERSION=${SCOPE}@v${RELEASE_VERSION}+build.${BUILD_NUM}.${BUILD_ID}
             fi      
-                ARTIFACT_NAME=${VERSION}.zip
-                zip dist -r *.tf
-                mv dist.zip ${ARTIFACT_NAME}
-                ls -al
-                echo "version=${VERSION}" >> $GITHUB_OUTPUT
-                echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+            
+            ARTIFACT_NAME=${VERSION}.zip
+            zip dist -r *.tf
+            mv dist.zip ${ARTIFACT_NAME}
+            ls -al
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+            echo "artifact_name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
         env:
           SCOPE: ${{ env.package_name }}
           RELEASE_VERSION: ${{ steps.get-version.outputs.new_version }}
