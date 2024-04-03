@@ -4,6 +4,6 @@ provider "aws" {
 }
 
 module "webapp1" {
-    source = "./modules/workflow/frontend"
-    web_name = "subashchy729.com"
+  source   = "./modules/workflow/frontend"
+  web_name = "subashchy729.com"
 }
