@@ -64,7 +64,8 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
   install-and-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    needs: build
     strategy:
       matrix:
         node-version: [18.x]
