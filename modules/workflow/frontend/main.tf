@@ -22,3 +22,5 @@ module "s3_bucket_policy" {
   bucket_name = module.s3_bucket.bucket_name
   bucket_arn  = module.s3_bucket.bucket_arn
 }
+
+

@@ -1,3 +1,18 @@
+# terraform {
+#   required_version = ">= 1.0"
+
+#   required_providers {
+#     aws = {
+#       source  = "hashicorp/aws"
+#       version = ">= 5.27"
+#     }
+#   }
+# }
+
+# provider "aws" {
+#   region = var.region
+# }
+
 resource "aws_s3_bucket" "subash_bucket" {
   bucket = var.bucket_name
   tags   = var.tags
@@ -20,8 +35,8 @@ variable "tags" {
 }
 
 resource "aws_s3_bucket_versioning" "backend_bucket_versioning" {
-  depends_on = [aws_s3_bucket.subash_bucket]
-  bucket     = aws_s3_bucket.subash_bucket.id
+  depends_on          = [aws_s3_bucket.subash_bucket]
+  bucket = aws_s3_bucket.subash_bucket.id
   versioning_configuration {
     status = "Enabled"
   }
