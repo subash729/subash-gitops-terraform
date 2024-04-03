@@ -192,10 +192,10 @@ jobs:
               aws s3 sync dist/ s3://prod.subash-frontend --delete
             elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
               aws s3 sync dist/ s3://dev.subash-frontend --delete
-          else
+            else
               echo "Branch not recognized for deployment"
               exit 1
-          fi
+            fi
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
