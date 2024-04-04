@@ -5,7 +5,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "prod.subash-frontend"
+    bucket         = "prod.subash-terraform-state"
     key            = "terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "prod.subash_terraform_dynamo_db"
