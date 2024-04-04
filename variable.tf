@@ -3,6 +3,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "web_name" {
-  description = "Name of the web application"
-}
+# variable "web_name" {
+#   description = "Name of the web application"
+# }
