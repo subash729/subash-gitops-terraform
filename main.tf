@@ -13,7 +13,7 @@ provider "aws" {
 # }
 
 terraform {
-  backend "s31" {
+  backend "s3" {
     bucket         = "dev.subash-frontend"
     key            = "terraform.tfstate"
     region         = "us-east-1"
