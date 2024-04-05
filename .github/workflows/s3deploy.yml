@@ -8,13 +8,11 @@ on:
     branches:
       - dev
       - main
-
   pull_request:
     types: [synchronize, closed, opened]
     branches:
       - dev
       - main
-
 jobs:
   resolve-env:
     runs-on: ubuntu-latest
@@ -24,8 +22,10 @@ jobs:
           branch_ref=${{ github.ref }}
           if [[ "$branch_ref" == "refs/heads/main" ]]; then
             echo "env_name=prod" >> $GITHUB_ENV
-          else
+          elif [[ "$branch_ref" == "refs/heads/dev" ]]; then
             echo "env_name=dev" >> $GITHUB_ENV
+          else
+            echo "env_name=other" >> $GITHUB_ENV
           fi
     outputs:
       env_name: '${{ env.env_name }}'
@@ -83,12 +83,12 @@ jobs:
       - name: Terraform apply
         if: github.event_name == 'push' || github.event.pull_request.merged
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ env.environment }}" == "prod" ]]; then
             terraform apply -var="environment=prod" --auto-approve
-          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+          elif [[ "${{ env.environment }}" == "dev" ]]; then
             terraform apply -var="environment=dev" --auto-approve
           else
-            echo "Branch not recognized for deployment"
+            echo "Invalid environment specified"
             exit 1
           fi
         env:
@@ -190,15 +190,15 @@ jobs:
 
       - name: Deploy to S3 Bucket
         run: |
-            ls  -al
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-              aws s3 sync dist/ s3://prod.subash-frontend --delete
-            elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-              aws s3 sync dist/ s3://dev.subash-frontend --delete
-            else
-              echo "Branch not recognized for deployment"
-              exit 1
-            fi
+          ls -al
+          if [[ "${{ env.environment }}" == "prod" ]]; then
+            aws s3 sync dist/ s3://prod.subash-frontend --delete
+          elif [[ "${{ env.environment }}" == "dev" ]]; then
+            aws s3 sync dist/ s3://dev.subash-frontend --delete
+          else
+            echo "Invalid environment specified"
+            exit 1
+          fi
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
