@@ -25,8 +25,6 @@ jobs:
             echo "env_name=prod" >> $GITHUB_ENV
           elif [[ "$branch_ref" == "refs/heads/dev" ]]; then
             echo "env_name=dev" >> $GITHUB_ENV
-          else
-            echo "env_name=other" >> $GITHUB_ENV
           fi
     outputs:
       env_name: '${{ env.env_name }}'
