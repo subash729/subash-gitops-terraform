@@ -8,6 +8,7 @@ on:
     branches:
       - dev
       - main
+
   pull_request:
     types: [synchronize, closed, opened]
     branches:
@@ -23,7 +24,7 @@ jobs:
           branch_ref=${{ github.ref }}
           if [[ "$branch_ref" == "refs/heads/main" ]]; then
             echo "env_name=prod" >> $GITHUB_ENV
-          elif [[ "$branch_ref" == "refs/heads/dev" ]]; then
+          else
             echo "env_name=dev" >> $GITHUB_ENV
           fi
     outputs:
@@ -50,7 +51,6 @@ jobs:
         run: |
           terraform fmt -recursive
           terraform fmt -check -recursive
-
       - name: Terraform init
         run: terraform init
         env:
@@ -82,12 +82,12 @@ jobs:
       - name: Terraform apply
         if: github.event_name == 'push' || github.event.pull_request.merged
         run: |
-          if [[ "${{ env.environment }}" == "prod" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             terraform apply -var="environment=prod" --auto-approve
-          elif [[ "${{ env.environment }}" == "dev" ]]; then
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
             terraform apply -var="environment=dev" --auto-approve
           else
-            echo "Invalid environment specified"
+            echo "Branch not recognized for deployment"
             exit 1
           fi
         env:
@@ -181,23 +181,21 @@ jobs:
           yarn build
           cp -r dist ../
           cd ..
-
       - name: Copy dist folder to S3 using cp
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-
       - name: Deploy to S3 Bucket
         run: |
-          ls -al
-          if [[ "${{ env.environment }}" == "prod" ]]; then
-            aws s3 sync dist/ s3://prod.subash-frontend --delete
-          elif [[ "${{ env.environment }}" == "dev" ]]; then
-            aws s3 sync dist/ s3://dev.subash-frontend --delete
-          else
-            echo "Invalid environment specified"
-            exit 1
-          fi
+            ls  -al
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              aws s3 sync dist/ s3://prod.subash-frontend --delete
+            elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+              aws s3 sync dist/ s3://dev.subash-frontend --delete
+            else
+              echo "Branch not recognized for deployment"
+              exit 1
+            fi
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.O_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.O_AWS_SECRET_ACCESS_KEY }}
