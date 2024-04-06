@@ -5,7 +5,7 @@ variable "region" {
 
 variable "environment" {
   description = "The environment (prod or dev)"
-  default     = "dev"
+  default     = "prod"
 }
 
 variable "dynamodb_table_name" {
