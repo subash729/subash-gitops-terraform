@@ -8,7 +8,7 @@ terraform {
     bucket         = "subash-terraform-state"
     key            = "terraform_state"
     region         = "us-east-1"
-    dynamodb_table = "subash-frontend.terraform_state"
+    dynamodb_table = "prod.frontend.table"
   }
 }
 
