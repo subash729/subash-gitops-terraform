@@ -36,8 +36,9 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Check for drift
+        id: drift
         if: steps.plan.outputs.exitcode != 0 && steps.plan.outputs.exitcode != 2
-        run: echo "::set-output name=drift-detected::true"
+        run: echo "true"
       
       - name: Reconcile drift
         if: steps.plan.outputs.exitcode != 0 && steps.plan.outputs.exitcode != 2
