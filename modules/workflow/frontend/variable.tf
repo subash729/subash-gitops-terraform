@@ -3,7 +3,7 @@ variable "web_name" {
   # default = "subashchy729.com"
 }
 
-variable "dynamodb_table_name " {
+variable "dynamodb_table_name" {
 description = "table name"
 default = "dev.subash."  
 }
