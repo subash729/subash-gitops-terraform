@@ -23,4 +23,8 @@ module "s3_bucket_policy" {
   bucket_arn  = module.s3_bucket.bucket_arn
 }
 
+module "dynamo_table" {
+  source = "../../Resources/dynamo-table"
+  dynamodb_table_name = var.dynamodb_table_name  
 
+}
