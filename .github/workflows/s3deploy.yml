@@ -4,10 +4,16 @@ env:
   package_name: gitops
 
 on:
-  push:
-    branches:
-      - dev
-      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - 'dev'
+          - 'prod'
+
 
   pull_request:
     types: [synchronize, closed, opened]
@@ -202,4 +208,3 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
 
-          
