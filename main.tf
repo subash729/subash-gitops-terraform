@@ -14,7 +14,7 @@ terraform {
 
 module "webapp1" {
   source   = "./modules/workflow/frontend"
-  bucket = "${var.environment}.subash-frontend"
+  bucket = "${var.environment}.subash-frontend.new"
   dynamodb_table_name = "${var.environment}.frontend.table"
 }
 
