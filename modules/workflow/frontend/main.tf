@@ -11,7 +11,7 @@ locals {
 module "s3_bucket" {
   source      = "../../Resources/s3-bucket/"
   region      = "us-east-1"
-  bucket_name = var.web_name
+  bucket_name = var.bucket 
 
   tags = local.global_tags
 }

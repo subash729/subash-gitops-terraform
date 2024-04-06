@@ -1,18 +1,3 @@
-# terraform {
-#   required_version = ">= 1.0"
-
-#   required_providers {
-#     aws = {
-#       source  = "hashicorp/aws"
-#       version = ">= 5.27"
-#     }
-#   }
-# }
-
-# provider "aws" {
-#   region = var.region
-# }
-
 resource "aws_s3_bucket" "subash_bucket" {
   bucket = var.bucket_name
   tags   = var.tags

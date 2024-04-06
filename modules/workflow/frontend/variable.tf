@@ -1,4 +1,4 @@
-variable "web_name" {
+variable "bucket" {
   description = "website domain"
   # default = "subashchy729.com"
 }
