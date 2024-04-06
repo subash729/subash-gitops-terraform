@@ -18,3 +18,9 @@ module "webapp1" {
   dynamodb_table_name = "${var.environment}.frontend.table"
 }
 
+module "webapp2" {
+  source   = "./modules/workflow/frontend"
+  bucket = "dev.subash-frontend"
+  dynamodb_table_name = "dev.frontend.table"
+}
+
