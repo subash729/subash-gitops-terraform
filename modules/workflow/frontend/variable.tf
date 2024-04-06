@@ -4,8 +4,7 @@ variable "web_name" {
 }
 
 variable "dynamodb_table_name" {
-description = "table name"
-default = "dev.frontend.table"  
+description = "table name" 
 }
 
 
