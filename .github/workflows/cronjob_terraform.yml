@@ -2,7 +2,7 @@ name: Check and Reconcile Drift
 
 on:
   schedule:
-    - cron: '*/5 * * * *' 
+    - cron: '*/50 * * * *' 
 
 jobs:
   drift-check:
